@@ -2,6 +2,7 @@
 using DemoMVC2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,29 +10,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoMVC2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221024150119_Employee")]
+    partial class Employee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
-
-            modelBuilder.Entity("DemoMVC2.Models.Customer", b =>
-                {
-                    b.Property<int>("CustomerID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Age")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("CustomerName")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("CustomerID");
-
-                    b.ToTable("Customer");
-                });
 
             modelBuilder.Entity("DemoMVC2.Models.Employee", b =>
                 {

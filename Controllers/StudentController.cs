@@ -9,6 +9,10 @@ namespace DemoMVC2.Controllers
     {
         //khai bao ApplicationDbContext
         private readonly ApplicationDbContext _context;
+        private bool StudentExists(int id)
+        {
+            return _context.Students.Any(e => e.StudentID == id);
+        }
         public StudentController (ApplicationDbContext context)
         {
             _context = context;
@@ -37,6 +41,20 @@ namespace DemoMVC2.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(std);
+        }
+        // GET: Student/Edit/5
+        public async Task<IActionResult> Edit(String id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var Student = await _context.Students.FindAsync(id);
+            if (Student == null)
+            {
+                return NotFound();
+            }
+            return View(Student);
         }
     }
 }

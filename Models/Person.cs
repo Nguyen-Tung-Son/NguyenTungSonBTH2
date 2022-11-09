@@ -3,8 +3,8 @@ namespace DemoMVC2.Models
 {
     public class Person
     {
-        public int PersonID { get; set; }
-        public string? PersonName { get; set; }
-        public int Age { get; set; }
+        public string PersonID { get; set; }
+        public string PersonName { get; set; }
+        public string Age { get; set; }
     }
 }

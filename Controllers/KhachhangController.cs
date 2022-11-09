@@ -6,16 +6,16 @@ using DemoMVC2.Models.Process;
 
 namespace DemoMVC2.Controllers
 {
-    public class CustomerController : Controller
+    public class KhachhangController : Controller
     {
         //khai bao ApplicationDbContext
         private readonly ApplicationDbContext _context;
         private ExcelProcess _excelProcess = new ExcelProcess();
-        private bool CustomerExists(string id)
+        private bool KhachhangExists(string id)
         {
-            return _context.Customers.Any(e => e.CustomerID == id);
+            return _context.Khachhangs.Any(e => e.KhachhangID == id);
         }
-        public CustomerController (ApplicationDbContext context)
+        public KhachhangController (ApplicationDbContext context)
         {
             _context = context;
         }
@@ -23,7 +23,7 @@ namespace DemoMVC2.Controllers
         public async Task<IActionResult> Index()
         {
             //Lay danh sach Student va tra ve View
-            var model = await _context.Customers.ToListAsync();
+            var model = await _context.Khachhangs.ToListAsync();
             return View(model);
         }
         public IActionResult Create()
@@ -31,7 +31,7 @@ namespace DemoMVC2.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Customer std)
+        public async Task<IActionResult> Create(Khachhang std)
         {
             if(ModelState.IsValid)
             {
@@ -52,19 +52,19 @@ namespace DemoMVC2.Controllers
                 //return NotFound();
                 return View("NotFound");
             }
-            var Customer = await _context.Customers.FindAsync(id);
-            if (Customer == null)
+            var Khachhang = await _context.Khachhangs.FindAsync(id);
+            if (Khachhang == null)
             {
                 //return NotFound();
                 return View("NotFound");
             }
-            return View(Customer);
+            return View(Khachhang);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("CustomerID,CustomerName")] Customer std)
+        public async Task<IActionResult> Edit(string id, [Bind("KhachhangID,KhachhangName")] Khachhang std)
         {
-            if (id != std.CustomerID)
+            if (id != std.KhachhangID)
             {
                 //return NotFound();
                 return View("NotFound");
@@ -78,7 +78,7 @@ namespace DemoMVC2.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(std.CustomerID))
+                    if (!KhachhangExists(std.KhachhangID))
                     {
                         //return NotFound();
                         return View("NotFound");
@@ -100,8 +100,8 @@ namespace DemoMVC2.Controllers
                 //return NotFound();
                 return View("NotFound");
             }
-            var std = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerID == id);
+            var std = await _context.Khachhangs
+                .FirstOrDefaultAsync(m => m.KhachhangID == id);
             if (std == null)
             {
                 //return NotFound();
@@ -114,8 +114,8 @@ namespace DemoMVC2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var std = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(std);
+            var std = await _context.Khachhangs.FindAsync(id);
+            _context.Khachhangs.Remove(std);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -146,13 +146,13 @@ namespace DemoMVC2.Controllers
                         var dt = _excelProcess.ExcelToDataTable(fileLocation);
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
-                            var std = new Customer();
+                            var std = new Khachhang();
 
-                            std.CustomerID = dt.Rows[i][0].ToString();
-                            std.CustomerName = dt.Rows[i][1].ToString();
+                            std.KhachhangID = dt.Rows[i][0].ToString();
+                            std.KhachhangName = dt.Rows[i][1].ToString();
                             std.Age = dt.Rows[i][2].ToString();
 
-                            _context.Customers.Add(std);
+                            _context.Khachhangs.Add(std);
                         }
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));

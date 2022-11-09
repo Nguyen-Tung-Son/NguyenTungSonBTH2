@@ -1,0 +1,22 @@
+@model IEnumerable<DemoMVC2.Models.Khachhang>
+<p>
+    <a class="btn btn-success" asp-action="Create">Create a new Customer</a>
+</p>
+<table class="table table-all">
+    <tr>
+        <th>Khachhang ID</th>
+        <th>Khachhang Name</th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(m => item.KhachhangID)</td>
+            <td>@Html.DisplayFor(m => item.KhachhangName)</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.KhachhangID">Sửa</a>
+                <a asp-action="Delete" asp-route-id="@item.KhachhangID">Xóa</a>
+            </td>
+        </tr>
+    }
+</table>

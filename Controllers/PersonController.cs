@@ -2,14 +2,15 @@ using DemoMVC2.Data;
 using DemoMVC2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using DemoMVC2.Models.Process;
 namespace DemoMVC2.Controllers
 {
     public class PersonController : Controller
     {
         //khai bao ApplicationDbContext
         private readonly ApplicationDbContext _context;
-        private bool PersonExists(int id)
+        private ExcelProcess _excelProcess = new ExcelProcess();
+        private bool PersonExists(string id)
         {
             return _context.Persons.Any(e => e.PersonID == id);
         }
@@ -60,7 +61,7 @@ namespace DemoMVC2.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PersonID,PersonName")] Person std)
+        public async Task<IActionResult> Edit(string id, [Bind("PersonID,PersonName")] Person std)
         {
             if (id != std.PersonID)
             {
@@ -91,7 +92,7 @@ namespace DemoMVC2.Controllers
             return View(std);
         }
         // GET: Product/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -117,5 +118,49 @@ namespace DemoMVC2.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Upload()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file != null)
+            {
+                string fileExtension = Path.GetExtension(file.FileName);
+                if (fileExtension != ".xls" && fileExtension != ".xlsx")
+                {
+                    ModelState.AddModelError("", "Please choose excel file to upload!");
+                }
+                else
+                {
+                    var FileName = DateTime.Now.ToShortTimeString() + fileExtension;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory() + "/Uploads/Excels", FileName);
+                    var fileLocation = new FileInfo(filePath).ToString();
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        //save file to sever
+                        await file.CopyToAsync(stream);
+                        var dt = _excelProcess.ExcelToDataTable(fileLocation);
+                        for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            var std = new Person();
+
+                            std.PersonID = dt.Rows[i][0].ToString();
+                            std.PersonName = dt.Rows[i][1].ToString();
+                            std.Age = dt.Rows[i][2].ToString();
+
+                            _context.Persons.Add(std);
+                        }
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+            }
+            return View();
+        }
     }
 }
+        
+    

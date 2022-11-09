@@ -13,6 +13,8 @@ namespace DemoMVC2.Data
         public DbSet<Employee> Employees {get; set;}
         public DbSet<Person> Persons {get; set;}
         public DbSet<Customer> Customers {get; set;}
+        public DbSet<Khachhang> Khachhangs {get; set;}
+        public DbSet<DemoMVC2.Models.Sinhvien>? Sinhvien { get; set; }
        
     }
 }

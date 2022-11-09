@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemoMVC2.Controllers
 {
-    public class StudentController : Controller
+    public class PersonController : Controller
     {
         //khai bao ApplicationDbContext
         private readonly ApplicationDbContext _context;
-        private bool StudentExists(int id)
+        private bool PersonExists(int id)
         {
-            return _context.Students.Any(e => e.StudentID == id);
+            return _context.Persons.Any(e => e.PersonID == id);
         }
-        public StudentController (ApplicationDbContext context)
+        public PersonController (ApplicationDbContext context)
         {
             _context = context;
         }
@@ -21,7 +21,7 @@ namespace DemoMVC2.Controllers
         public async Task<IActionResult> Index()
         {
             //Lay danh sach Student va tra ve View
-            var model = await _context.Students.ToListAsync();
+            var model = await _context.Persons.ToListAsync();
             return View(model);
         }
         public IActionResult Create()
@@ -29,7 +29,7 @@ namespace DemoMVC2.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Student std)
+        public async Task<IActionResult> Create(Person std)
         {
             if(ModelState.IsValid)
             {
@@ -50,19 +50,19 @@ namespace DemoMVC2.Controllers
                 //return NotFound();
                 return View("NotFound");
             }
-            var Student = await _context.Students.FindAsync(id);
-            if (Student == null)
+            var Person = await _context.Persons.FindAsync(id);
+            if (Person == null)
             {
                 //return NotFound();
                 return View("NotFound");
             }
-            return View(Student);
+            return View(Person);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StudentID,StudentName")] Student std)
+        public async Task<IActionResult> Edit(int id, [Bind("PersonID,PersonName")] Person std)
         {
-            if (id != std.StudentID)
+            if (id != std.PersonID)
             {
                 //return NotFound();
                 return View("NotFound");
@@ -76,7 +76,7 @@ namespace DemoMVC2.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(std.StudentID))
+                    if (!PersonExists(std.PersonID))
                     {
                         //return NotFound();
                         return View("NotFound");
@@ -98,8 +98,8 @@ namespace DemoMVC2.Controllers
                 //return NotFound();
                 return View("NotFound");
             }
-            var std = await _context.Students
-                .FirstOrDefaultAsync(m => m.StudentID == id);
+            var std = await _context.Persons
+                .FirstOrDefaultAsync(m => m.PersonID == id);
             if (std == null)
             {
                 //return NotFound();
@@ -112,8 +112,8 @@ namespace DemoMVC2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var std = await _context.Students.FindAsync(id);
-            _context.Students.Remove(std);
+            var std = await _context.Persons.FindAsync(id);
+            _context.Persons.Remove(std);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

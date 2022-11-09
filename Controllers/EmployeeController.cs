@@ -50,7 +50,7 @@ namespace DemoMVC2.Controllers
                     var fileName = DateTime.Now.ToShortTimeString() + fileExtension;
                     var filePath = Path.Combine(Directory.GetCurrentDirectory() + "/Upload/Excels", fileName);
                     var fileLocation = new FileInfo(filePath).ToString();
-                    using (var steam = new FileStream(filePath,FileMode.Create))
+                    using (var stream = new FileStream(filePath,FileMode.Create))
                     {
                         //save file to server
                         await file.CopyToAsync(stream);

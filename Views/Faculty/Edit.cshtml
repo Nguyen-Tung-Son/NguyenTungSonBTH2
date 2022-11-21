@@ -1,0 +1,29 @@
+@model DemoMVC2.Models.Faculty
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h4>Sửa thông tin khoa</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="Text-danger"></div>
+            <input type="hidden" asp-for="FacultyID" />
+            <div class="form-group">
+                <label asp-for="FacultyName" class="Control-label"></label>
+                <input asp-for="FacultyName" class="form-control" />
+                <span asp-validation-for="FacultyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="save" class="btn btn-primary" />
+                <a class ="btn btn-success" asp-action="Index">Danh sách khoa</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

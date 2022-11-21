@@ -3,20 +3,18 @@ using DemoMVC2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DemoMVC2.Models.Process;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
 namespace DemoMVC2.Controllers
 {
-    public class StudentController : Controller
+    public class FacultyController : Controller
     {
         //khai bao ApplicationDbContext
         private readonly ApplicationDbContext _context;
         private ExcelProcess _excelProcess = new ExcelProcess();
-        private bool StudentExists(string id)
+        private bool FacultyExists(string id)
         {
-            return _context.Students.Any(e => e.StudentID == id);
+            return _context.Faculty.Any(e => e.FacultyID == id);
         }
-        public StudentController (ApplicationDbContext context)
+        public FacultyController (ApplicationDbContext context)
         {
             _context = context;
         }
@@ -24,29 +22,26 @@ namespace DemoMVC2.Controllers
         public async Task<IActionResult> Index()
         {
             //Lay danh sach Student va tra ve View
-            var model = await _context.Students.ToListAsync();
+            var model = await _context.Faculty.ToListAsync();
             return View(model);
         }
         public IActionResult Create()
         {
-            ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName");
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentID,StudentName,Age,FacultyID")] Student student)
+        public async Task<IActionResult> Create(Faculty std)
         {
             if(ModelState.IsValid)
             {
                 //Add vao ApplicationDbContext
-                _context.Add(student);
+                _context.Add(std);
                 //luu thay doi vao db
                 await _context.SaveChangesAsync();
                 //sau khi luu thay doi, dieu huong ve trang index
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FacultyID"] = new SelectList(_context.Faculty, "FacultyID", "FacultyName", student.FacultyID);
-            return View(student);
+            return View(std);
         }
         // GET: Student/Edit/5
         public async Task<IActionResult> Edit(String id)
@@ -56,19 +51,19 @@ namespace DemoMVC2.Controllers
                 //return NotFound();
                 return View("NotFound");
             }
-            var Student = await _context.Students.FindAsync(id);
-            if (Student == null)
+            var Faculty = await _context.Faculty.FindAsync(id);
+            if (Faculty == null)
             {
                 //return NotFound();
                 return View("NotFound");
             }
-            return View(Student);
+            return View(Faculty);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("StudentID,StudentName")] Student std)
+        public async Task<IActionResult> Edit(string id, [Bind("FacultyID,FacultyName")] Faculty std)
         {
-            if (id != std.StudentID)
+            if (id != std.FacultyID)
             {
                 //return NotFound();
                 return View("NotFound");
@@ -82,7 +77,7 @@ namespace DemoMVC2.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(std.StudentID))
+                    if (!FacultyExists(std.FacultyID))
                     {
                         //return NotFound();
                         return View("NotFound");
@@ -104,8 +99,8 @@ namespace DemoMVC2.Controllers
                 //return NotFound();
                 return View("NotFound");
             }
-            var std = await _context.Students
-                .FirstOrDefaultAsync(m => m.StudentID == id);
+            var std = await _context.Faculty
+                .FirstOrDefaultAsync(m => m.FacultyID == id);
             if (std == null)
             {
                 //return NotFound();
@@ -118,8 +113,8 @@ namespace DemoMVC2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var std = await _context.Students.FindAsync(id);
-            _context.Students.Remove(std);
+            var std = await _context.Faculty.FindAsync(id);
+            _context.Faculty.Remove(std);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -150,13 +145,13 @@ namespace DemoMVC2.Controllers
                         var dt = _excelProcess.ExcelToDataTable(fileLocation);
                         for (int i = 0; i < dt.Rows.Count; i++)
                         {
-                            var std = new Student();
+                            var std = new Faculty();
 
-                            std.StudentID = dt.Rows[i][0].ToString();
-                            std.StudentName = dt.Rows[i][1].ToString();
-                            std.Age = dt.Rows[i][2].ToString();
+                            std.FacultyID = dt.Rows[i][0].ToString();
+                            std.FacultyName = dt.Rows[i][1].ToString();
+                            //std.Age = dt.Rows[i][2].ToString();
 
-                            _context.Students.Add(std);
+                            _context.Faculty.Add(std);
                         }
                         await _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));

@@ -15,6 +15,7 @@ namespace DemoMVC2.Data
         public DbSet<Customer> Customers {get; set;}
         public DbSet<Khachhang> Khachhangs {get; set;}
         public DbSet<DemoMVC2.Models.Sinhvien>? Sinhvien { get; set; }
+        public DbSet<DemoMVC2.Models.Faculty> Faculty {get; set; } = default!;
        
     }
 }
